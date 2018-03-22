@@ -1,28 +1,56 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Button, Card, Icon } from 'semantic-ui-react'
+import Timer from './components/Timer'
+import AddTimer from './components/AddTimer'
+import { Card } from 'semantic-ui-react'
 
 class App extends Component {
   constructor (props) {
     super(props)
-    this.state = {count: 1}
+    this.state = {
+      timers: [
+        {id:1, title:'Practice squat', project:'Gym Chores', count:1, setVar: 0}, {id:2,title:'Bake squash', project:'Kitchen Chores', count:1, setVar: 0}
+      ]
+    }
+  }
+  // componentWillUnmount () {
+  //   clearInterval(this.timer)
+  // }
+
+  tick = (t) => {
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, { count: timer.count+1000 })
+      } else {
+        return timer
+      }
+    })
+    this.setState({ timers });
   }
 
-  componentWillUnmount () {
-    clearInterval(this.timer)
+  startTimer = (t) => {
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, {
+          setVar: setInterval(this.tick, 1000,t)
+        })
+      } else {
+        return timer
+      }
+    })
+    this.setState({timers})
   }
 
-  tick = () => {
-    this.setState({count: (this.state.count + 1000)})
-  }
-
-  startTimer = () => {
-    clearInterval(this.timer)
-    this.timer = setInterval(this.tick, 1000)
-  }
-
-  stopTimer = () => {
-    clearInterval(this.timer)
+  stopTimer = (t) => {
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, { setVar: 0 })
+      } else {
+        return timer
+      }
+    })
+    this.setState({ timers })
+    clearInterval( t.setVar )
   }
 
   millisecondsToHuman = (ms) => {
@@ -45,35 +73,35 @@ class App extends Component {
     return padded;
   }
 
+  removeTimer = (t) => {
+    this.stopTimer(t);
+    const timers = this.state.timers;
+    this.setState({
+      timers: timers.filter((timer,i) => t.id !==timer.id)
+    })
+  }
+
+  newTimer = () => {
+    const long = this.state.timers.length
+    const newTimer = {id: long+1, title: 'Title', project: 'project',count:1, setVar: 0 }
+    this.setState({
+      timers: this.state.timers.concat(newTimer)
+    })
+  }
+
   render() {
     return (
       <div className="App" id="cards" >
         <Card.Group >
-          <Card>
-            <Card.Content>
-              <Card.Header>
-                Steve Sanders
-              </Card.Header>
-              <Card.Meta>
-                Friends of Elliot
-              </Card.Meta>
-              <Card.Description>
-                {this.millisecondsToHuman(this.state.count)}
-              </Card.Description>
-              <div className="icons">
-                <Icon link name='trash' />
-                <Icon link name='edit' />
-              </div>
-            </Card.Content>
-            <Card.Content extra>
-              <div className='ui two buttons'>
-                <Button onClick={this.startTimer} basic color='green'>Star</Button>
-                <Button onClick={this.stopTimer} basic color='red'>Stop</Button>
-              </div>
-            </Card.Content>
-          </Card>
-
+          {this.state.timers.map((timer)=>(
+            <Timer
+              key={timer.id}
+              info={timer}
+              onStartClick={this.startTimer.bind(this,timer)} onStopClick={this.stopTimer.bind(this,timer)} millisecondsToHuman={this.millisecondsToHuman(timer.count)}            onRemoveClick={this.removeTimer.bind(this,timer)}
+            />
+          ))}
         </Card.Group>
+        <AddTimer />
       </div>
     );
   }
