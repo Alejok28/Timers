@@ -4,29 +4,32 @@ import { Button, Card, Form } from 'semantic-ui-react'
 class TimerForm extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       title: '',
       project: ''
-    }
+    };
   }
+
   handleTitleChange = (e) => {
     this.setState({
       title: e.target.value
-    })
+    });
   }
+
   handleProjectChange = (e) => {
     this.setState({
       project: e.target.value
-    })
+    });
   }
 
   handleSubmit = (e) => {
-    const timer = {title: this.state.title, project: this.state.project}
+    const title = this.state.title ? this.state.title : "Timer"
+    const project = this.state.project ? this.state.project : "Project"
+    const timer = { title , project }
     e.preventDefault();
-    // store.dispatch({
-    //   type: "ADD_TIMER",
-    //   timer
-    // })
+    this.props.onCreateClick(timer);
+    this.props.onCancelClick();
   }
 
   render(){

@@ -6,6 +6,9 @@
   padding: 40px;
 }
 /* TIMER */
+.timer{
+  margin-top: 20px;
+}
 .header{
   padding-top: 10px;
   text-align: left;

@@ -1,14 +1,34 @@
 import React, { Component }  from 'react';
 import { Button, Card, Icon } from 'semantic-ui-react'
+import AddTimer from './AddTimer'
+import TimerForm from './TimerForm'
+
 
 class Timer extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
+
     this.state = {
       timers: [
-        {id:1, title:'Practice squat', project:'Gym Chores', count:1, setVar: 0}, {id:2,title:'Bake squash', project:'Kitchen Chores', count:1, setVar: 0}
-      ]
-    }
+        {
+          id:1,
+          title:'Practice squat',
+          project:'Gym Chores',
+          count:1,
+          setVar: 0,
+          edit: false
+        },
+        {
+          id:2,
+          title:'Bake squash',
+          project:'Kitchen Chores',
+          count:1,
+          setVar: 0,
+          edit: false
+        }
+      ],
+      counters: 2
+    };
   }
 
   tick = (t) => {
@@ -18,9 +38,9 @@ class Timer extends Component {
       } else {
         return timer
       }
-    })
-    this.setState({ timers });
+    });
 
+    this.setState({ timers });
   }
 
   startTimer = (t) => {
@@ -32,8 +52,8 @@ class Timer extends Component {
       } else {
         return timer
       }
-    })
-    this.setState({timers})
+    });
+    this.setState({timers});
   }
 
   stopTimer = (t) => {
@@ -43,9 +63,9 @@ class Timer extends Component {
       } else {
         return timer
       }
-    })
-    this.setState({ timers })
-    clearInterval( t.setVar )
+    });
+    this.setState({ timers });
+    clearInterval( t.setVar );
   }
 
   millisecondsToHuman = (ms) => {
@@ -75,37 +95,81 @@ class Timer extends Component {
       timers: timers.filter((timer,i) => t.id !==timer.id)
     })
   }
+
+  newTimer = (timer) => {
+    const long = this.state.counters;
+    const newTimer = {
+      id: long + 1,
+      title: timer.title,
+      project: timer.project,
+      count:1,
+      setVar: 0,
+      edit: false
+    };
+
+    this.setState({
+      timers: this.state.timers.concat(newTimer),
+      counters: this.state.counters + 1
+    });
+    console.log(newTimer);
+  }
+
+  showForm = (t) => {
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, {
+          edit: !t.edit
+        })
+      } else {
+        return timer
+      }
+    });
+    this.setState({timers});
+  }
+
+
   render() {
     return (
-      <Card.Group >
-        {this.state.timers.map((timer)=>(
-          <Card>
-            <Card.Content>
-              <Card.Header>
-                {timer.title}
-              </Card.Header>
-              <Card.Meta>
-                {timer.project}
-              </Card.Meta>
-              <Card.Description>
-                {this.millisecondsToHuman(timer.count)}
-              </Card.Description>
-              <div className="icons">
-                <Icon link name='trash' onClick={this.removeTimer.bind(this,timer)} />
-                <Icon link name='edit' />
+      <div>
+        <Card.Group >
+          {this.state.timers.map((timer)=>(
+            timer.edit?
+              <div key={timer.id} className="timer">
+                <TimerForm onCancelClick={this.handleCancelClick} onCreateClick={this.props.onCreateTimer}/>
               </div>
-            </Card.Content>
-            <Card.Content extra>
-              <div className='ui two buttons'>
-                {timer.setVar === 0?
-                  <Button onClick={this.startTimer.bind(this,timer)} basic color='green'>Star</Button> :
-                  <Button onClick={this.stopTimer.bind(this,timer)} basic color='red'>Stop</Button>
-                }
+              :
+              <div key={timer.id} className="timer">
+                <Card>
+                  <Card.Content>
+                    <Card.Header>
+                      {timer.title}
+                    </Card.Header>
+                    <Card.Meta>
+                      {timer.project}
+                    </Card.Meta>
+                    <Card.Description>
+                      {this.millisecondsToHuman(timer.count)}
+                    </Card.Description>
+                    <div className="icons">
+                      <Icon link name='trash' onClick={this.removeTimer.bind(this,timer)} />
+                      <Icon link name='edit' onClick={this.showForm.bind(this,timer)}/>
+                    </div>
+                  </Card.Content>
+                  <Card.Content extra>
+                    <div className='ui two buttons'>
+                      {timer.setVar === 0?
+                        <Button onClick={this.startTimer.bind(this,timer)} basic color='green'>Star</Button>
+                        :
+                        <Button onClick={this.stopTimer.bind(this,timer)} basic color='red'>Stop</Button>
+                      }
+                    </div>
+                  </Card.Content>
+                </Card>
               </div>
-            </Card.Content>
-          </Card>
-        ))}
-      </Card.Group>
+          ))}
+        </Card.Group>
+        <AddTimer onCreateTimer={this.newTimer}/>
+      </div>
  	  )
   }
 }
