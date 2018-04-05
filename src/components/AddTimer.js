@@ -1,11 +1,10 @@
 import React , { Component } from 'react';
 import TimerForm from './TimerForm'
 import { Button, Icon } from 'semantic-ui-react'
-// import { Button, Card, Form } from 'semantic-ui-react'
 
 class AddTimer extends Component {
 	constructor() {
-		super()
+		super();
 
 		this.state = {
 			showForm: false
@@ -28,7 +27,10 @@ class AddTimer extends Component {
 		return (
 			<div className='addTimer-options'>
 				{this.state.showForm?
-					<TimerForm onCancelClick={this.handleCancelClick} onCreateClick={this.props.onCreateTimer}/>
+					<TimerForm
+						onCancelClick={this.handleCancelClick}
+						onCreateClick={this.props.onCreateTimer}
+					/>
 					:
 					<Button icon onClick={this.handleAddTimerClick}>
 						<Icon  name='plus' />

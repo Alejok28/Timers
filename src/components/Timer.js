@@ -6,7 +6,7 @@ import EditTimer from './EditTimer'
 
 class Timer extends Component {
   constructor (props) {
-    super(props)
+    super(props);
 
     this.state = {
       timers: [
@@ -92,7 +92,7 @@ class Timer extends Component {
     this.stopTimer(t);
     const timers = this.state.timers;
     this.setState({
-      timers: timers.filter((timer,i) => t.id !==timer.id)
+      timers: timers.filter((timer, i) => t.id !== timer.id)
     });
   }
 
@@ -140,7 +140,6 @@ class Timer extends Component {
   }
 
   handleEditTimer = t => {
-    console.log(t);
     const timers = this.state.timers.map((timer) => {
       if (timer.id === t.id) {
         return Object.assign({}, timer, {
@@ -180,19 +179,35 @@ class Timer extends Component {
                       {this.millisecondsToHuman(timer.count)}
                     </Card.Description>
                     <div className="icons">
-                      <Icon link name='trash' onClick={this.removeTimer.bind(this,timer)} />
-                      <Icon link name='edit' onClick={this.showForm.bind(this,timer)}/>
+                      <Icon
+                        link
+                        name='trash'
+                        onClick={this.removeTimer.bind(this,timer)}
+                      />
+                      <Icon
+                        link
+                        name='edit'
+                        onClick={this.showForm.bind(this,timer)}
+                      />
                     </div>
                   </Card.Content>
-                  <Card.Content extra>
-                    <div className='ui two buttons'>
-                      {timer.setVar === 0?
-                        <Button onClick={this.startTimer.bind(this,timer)} basic color='green'>Star</Button>
-                        :
-                        <Button onClick={this.stopTimer.bind(this,timer)} basic color='red'>Stop</Button>
-                      }
-                    </div>
-                  </Card.Content>
+                  <div className='ui two buttons'>
+                    {timer.setVar === 0?
+                      <Button
+                        onClick={this.startTimer.bind(this,timer)}
+                        basic
+                        color='green'>
+                        Star
+                      </Button>
+                      :
+                      <Button
+                        onClick={this.stopTimer.bind(this,timer)}
+                        basic
+                        color='red'>
+                        Stop
+                      </Button>
+                    }
+                  </div>
                 </Card>
               </div>
           ))}

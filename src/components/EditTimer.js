@@ -3,7 +3,7 @@ import { Button, Card, Form } from 'semantic-ui-react'
 
 class EditTimer extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       title: this.props.timer.title,
@@ -11,26 +11,26 @@ class EditTimer extends Component {
     };
   }
 
-  handleTitleChange = (e) => {
-    this.setState({
-      title: e.target.value
-    });
+  handleTitleChange = e => {
+    this.setState({ title: e.target.value });
   }
 
-  handleProjectChange = (e) => {
-    this.setState({
-      project: e.target.value
-    });
+  handleProjectChange = e => {
+    this.setState({ project: e.target.value });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
 		const id = this.props.timer.id;
     const title = this.state.title ? this.state.title : "Timer";
     const project = this.state.project ? this.state.project : "Project";
-    const timer = {id, title , project, edit: false};
+    const timer = {
+      id,
+      title,
+      project,
+      edit: false
+    };
     e.preventDefault();
     this.props.onCreateClick(timer);
-    // this.props.onCancelClick();
   }
 
   render(){
@@ -40,7 +40,7 @@ class EditTimer extends Component {
           <Form>
             <Form.Field>
               <label className='newTimer-form'>Title</label>
-              <input value={this.state.title} onChange={this.handleTitleChange}/>
+              <input value={this.state.title} onChange={this.handleTitleChange} autoFocus/>
             </Form.Field>
             <Form.Field>
               <label className='newTimer-form'>Project</label>

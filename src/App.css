@@ -1,13 +1,14 @@
 .App {
+  box-sizing: inherit;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  width: 30%;
+  width: 28%;
   padding: 40px;
 }
 /* TIMER */
 .timer{
-  margin-top: 20px;
+  margin-top: 15px;
 }
 .header{
   padding-top: 10px;
