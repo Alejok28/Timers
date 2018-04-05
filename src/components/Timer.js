@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import { Button, Card, Icon } from 'semantic-ui-react'
 import AddTimer from './AddTimer'
-import TimerForm from './TimerForm'
+import EditTimer from './EditTimer'
 
 
 class Timer extends Component {
@@ -31,44 +31,44 @@ class Timer extends Component {
     };
   }
 
-  tick = (t) => {
+  tick = t => {
     const timers = this.state.timers.map((timer) => {
       if (timer.id === t.id) {
-        return Object.assign({}, timer, { count: timer.count+1000 })
+        return Object.assign({}, timer, { count: timer.count+1000 });
       } else {
-        return timer
+        return timer;
       }
     });
 
     this.setState({ timers });
   }
 
-  startTimer = (t) => {
+  startTimer = t => {
     const timers = this.state.timers.map((timer) => {
       if (timer.id === t.id) {
         return Object.assign({}, timer, {
           setVar: setInterval(this.tick, 1000,t)
-        })
+        });
       } else {
-        return timer
+        return timer;
       }
     });
     this.setState({timers});
   }
 
-  stopTimer = (t) => {
+  stopTimer = t => {
     const timers = this.state.timers.map((timer) => {
       if (timer.id === t.id) {
-        return Object.assign({}, timer, { setVar: 0 })
+        return Object.assign({}, timer, { setVar: 0 });
       } else {
-        return timer
+        return timer;
       }
     });
     this.setState({ timers });
     clearInterval( t.setVar );
   }
 
-  millisecondsToHuman = (ms) => {
+  millisecondsToHuman = ms => {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / 1000 / 60) % 60);
     const hours = Math.floor(ms / 1000 / 60 / 60);
@@ -88,15 +88,15 @@ class Timer extends Component {
     return padded;
   }
 
-  removeTimer = (t) => {
+  removeTimer = t => {
     this.stopTimer(t);
     const timers = this.state.timers;
     this.setState({
       timers: timers.filter((timer,i) => t.id !==timer.id)
-    })
+    });
   }
 
-  newTimer = (timer) => {
+  newTimer = timer => {
     const long = this.state.counters;
     const newTimer = {
       id: long + 1,
@@ -111,22 +111,49 @@ class Timer extends Component {
       timers: this.state.timers.concat(newTimer),
       counters: this.state.counters + 1
     });
-    console.log(newTimer);
   }
 
-  showForm = (t) => {
+  showForm = t => {
     const timers = this.state.timers.map((timer) => {
       if (timer.id === t.id) {
         return Object.assign({}, timer, {
           edit: !t.edit
-        })
+        });
       } else {
-        return timer
+        return timer;
       }
     });
     this.setState({timers});
   }
 
+  handeCancelEdit = t => {
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, {
+          edit: false
+        });
+      } else {
+        return timer;
+      }
+    });
+    this.setState({timers});
+  }
+
+  handleEditTimer = t => {
+    console.log(t);
+    const timers = this.state.timers.map((timer) => {
+      if (timer.id === t.id) {
+        return Object.assign({}, timer, {
+          title: t.title,
+          project: t.project,
+          edit: t.edit
+        });
+      } else {
+        return timer;
+      }
+    });
+    this.setState({timers});
+  }
 
   render() {
     return (
@@ -135,7 +162,9 @@ class Timer extends Component {
           {this.state.timers.map((timer)=>(
             timer.edit?
               <div key={timer.id} className="timer">
-                <TimerForm onCancelClick={this.handleCancelClick} onCreateClick={this.props.onCreateTimer}/>
+                <EditTimer
+                  timer={timer}
+                  onCancelClick={this.handeCancelEdit.bind(this,timer)} onCreateClick={this.handleEditTimer}/>
               </div>
               :
               <div key={timer.id} className="timer">
